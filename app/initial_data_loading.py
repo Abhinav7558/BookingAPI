@@ -5,6 +5,7 @@ import json
 
 from app.database import SessionLocal
 from app.models import FitnessClass
+from app.utils.timezone_utils import convert_timezone_to_utc
 
 
 load_dotenv()
@@ -22,10 +23,12 @@ def initial_data_load_fitness_classes():
             return
 
         for cls in classes_data:
-            scheduled_at = datetime.fromisoformat(cls["scheduled_at"])
+            naive  = datetime.fromisoformat(cls["scheduled_at"])
+            utc_dt = convert_timezone_to_utc(naive)
+
             fitness_class = FitnessClass(
                 name=cls["name"],
-                scheduled_at=scheduled_at,
+                scheduled_at=utc_dt,
                 instructor=cls["instructor"],
                 total_slots=cls["slots"],
                 available_slots=cls["slots"],
