@@ -12,7 +12,7 @@ class FitnessClass(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False, index=True)
-    datetime = Column(DateTime(timezone=True), nullable=False, index=True)
+    scheduled_at = Column(DateTime(timezone=True), nullable=False, index=True)
     instructor = Column(String(100), nullable=False)
     total_slots = Column(Integer, nullable=False)
     available_slots = Column(Integer, nullable=False)

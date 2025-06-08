@@ -8,6 +8,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.database import engine, Base
+from app.routers import bookings, classes
+from app.initial_data import initial_data_load_fitness_classes
 
 # Configure logging
 logging.basicConfig(
@@ -16,13 +18,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan context manager for startup and shutdown events"""
     # Startup
     logger.info("Starting up Fitness Studio Booking API")
-    Base.metadata.create_all(bind=engine)
     yield
     # Shutdown
     logger.info("Shutting down Fitness Studio Booking API")
@@ -46,15 +46,6 @@ app.add_middleware(
 )
 
 
-@app.middleware("http")
-async def log_requests(request: Request, call_next):
-    """Log all HTTP requests"""
-    logger.info(f"{request.method} {request.url}")
-    response = await call_next(request)
-    logger.info(f"Response status: {response.status_code}")
-    return response
-
-
 @app.exception_handler(SQLAlchemyError)
 async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
     """Handle SQLAlchemy database errors"""
@@ -76,7 +67,8 @@ async def general_exception_handler(request: Request, exc: Exception):
 
 
 # Include API routes
-#app.include_router(router, prefix="/api/v1")
+app.include_router(bookings.router)
+app.include_router(classes.router)
 
 
 @app.get("/")
