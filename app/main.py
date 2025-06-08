@@ -9,7 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.database import engine, Base
 from app.routers import bookings, classes
-from app.initial_data import initial_data_load_fitness_classes
+from app.initial_data_loading import initial_data_load_fitness_classes
 
 # Configure logging
 logging.basicConfig(
@@ -23,6 +23,7 @@ async def lifespan(app: FastAPI):
     """Lifespan context manager for startup and shutdown events"""
     # Startup
     logger.info("Starting up Fitness Studio Booking API")
+    initial_data_load_fitness_classes()
     yield
     # Shutdown
     logger.info("Shutting down Fitness Studio Booking API")
