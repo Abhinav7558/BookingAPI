@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from typing import List
 
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
 from app.database import get_db
@@ -21,7 +21,7 @@ class FitnessClassResponse(BaseModel):
     instructor: str
     available_slots: int
 
-@router.get("/", response_model=List[FitnessClassResponse])
+@router.get("/", response_model=List[FitnessClassResponse], status_code=status.HTTP_200_OK)
 async def get_classes(db: Session = Depends(get_db)):
     """Get all upcoming fitness classes"""
     current_time = datetime.now(timezone.utc)
