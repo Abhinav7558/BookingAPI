@@ -1,0 +1,19 @@
+# Virtual environment
+venv/
+
+# Environment files
+.env
+
+# Alembic migrations (optional: include only generated versions if not storing them)
+alembic/versions/*.pyc
+.mako
+.pyc
+
+# IDE settings
+.vscode/
+
+#pycache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
