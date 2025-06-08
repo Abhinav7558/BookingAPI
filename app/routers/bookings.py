@@ -1,18 +1,26 @@
 from datetime import datetime
 import logging
+from typing import Optional, List
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.utils.timezone_utils import (
+    get_default_timezone,
+    is_valid_timezone,
+    convert_utc_to_timezone
+)
 from app.schemas import (
     BookingCreate, 
     BookingResponse, 
+    BookingWithClassResponse
 )
 from app.crud.book_class import (
     get_class,
     check_existing_booking,
-    create_booking
+    create_booking,
+    get_bookings_with_class_details_by_email
 )
 
 
@@ -96,4 +104,66 @@ async def create_booking_for_class(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to create booking"
+        )
+    
+
+@router.get(
+    "/bookings",
+    response_model=List[BookingWithClassResponse],
+    status_code=status.HTTP_200_OK
+)
+async def get_bookings(
+    email: str = Query(..., description="Client email address"),
+    timezone: Optional[str] = Query(
+        None, 
+        description="Target timezone for datetime conversion"
+    ),
+    db: Session = Depends(get_db)
+):
+    """
+    Get all bookings for a specific email address
+    """
+    target_timezone = timezone or get_default_timezone()
+    if not is_valid_timezone(target_timezone):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid timezone: {target_timezone}"
+        )
+    
+    try:
+        bookings = get_bookings_with_class_details_by_email(db, email)
+
+        print("boo", bookings)
+        
+        if not bookings:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No bookings found for email: {email}"
+            )
+        
+        # Convert datetimes to target timezone
+        response_bookings = []
+        for booking in bookings:
+            response_bookings.append(BookingWithClassResponse(
+                id=booking["id"],
+                class_id=booking["class_id"],
+                class_name=booking["class_name"],
+                scheduled_at=convert_utc_to_timezone(booking["scheduled_at"], target_timezone),
+                instructor=booking["instructor"],
+                client_name=booking["client_name"],
+                client_email=booking["client_email"],
+                booking_time=convert_utc_to_timezone(booking["booking_time"], target_timezone),
+                status=booking["status"]
+            ))
+        
+        logger.info(f"Retrieved {len(response_bookings)} bookings for {email}")
+        return response_bookings
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving bookings for {email}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve bookings"
         )

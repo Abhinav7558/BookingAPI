@@ -39,6 +39,16 @@ class BookingResponse(BookingBase):
     class Config:
         from_attributes = True
 
+
+class BookingWithClassResponse(BookingResponse):
+    """Schema for booking response with class details"""
+    class_name: str
+    instructor: str
+
+    class Config:
+        from_attributes = True
+
+
 class ErrorResponse(BaseModel):
     """Schema for error responses"""
     detail: str

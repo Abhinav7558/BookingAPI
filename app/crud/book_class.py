@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timezone
-from typing import Optional
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 
@@ -27,7 +27,6 @@ def check_existing_booking(db: Session, class_id: int, email: str) -> Optional[B
         )
         .first()
     )
-
 
 def create_booking(db: Session, booking_data: BookingCreate) -> Optional[Booking]:
     """
@@ -57,3 +56,31 @@ def create_booking(db: Session, booking_data: BookingCreate) -> Optional[Booking
     
     logger.info(f"Created booking: {db_booking.id} for class {booking_data.class_id}")
     return db_booking
+
+def get_bookings_with_class_details_by_email(db: Session, email: str) -> List[dict]:
+    """Get all bookings with class details for a specific email"""
+    results = (
+        db.query(Booking, FitnessClass)
+        .join(FitnessClass, Booking.class_id == FitnessClass.id)
+        .filter(Booking.client_email == email)
+        .order_by(Booking.booking_time.desc())
+        .all()
+    )
+
+    print("res", results)
+    
+    bookings_with_details = []
+    for booking, fitness_class in results:
+        bookings_with_details.append({
+            "id": booking.id,
+            "class_id": booking.class_id,
+            "class_name": fitness_class.name,
+            "scheduled_at": fitness_class.scheduled_at,
+            "instructor": fitness_class.instructor,
+            "client_name": booking.client_name,
+            "client_email": booking.client_email,
+            "booking_time": booking.booking_time,
+            "status": booking.status
+        })
+    
+    return bookings_with_details
