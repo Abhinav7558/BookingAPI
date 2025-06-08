@@ -23,7 +23,7 @@ class FitnessClass(Base):
     bookings = relationship("Booking", back_populates="fitness_class")
 
     def __repr__(self):
-        return f"<FitnessClass(id={self.id}, name='{self.name}', datetime='{self.datetime}')>"
+        return f"<FitnessClass(id={self.id}, name='{self.name}', datetime='{self.scheduled_at}')>"
 
 
 class Booking(Base):

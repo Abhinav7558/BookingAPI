@@ -3,31 +3,7 @@ Pydantic schemas for request/response validation
 """
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr, Field, validator
-
-
-class ClassBase(BaseModel):
-    """Base schema for fitness class"""
-    name: str = Field(..., min_length=1, max_length=100)
-    datetime: datetime
-    instructor: str = Field(..., min_length=1, max_length=100)
-    total_slots: int = Field(..., ge=1)
-    available_slots: int = Field(..., ge=0)
-
-
-class ClassCreate(ClassBase):
-    """Schema for creating a new fitness class"""
-    pass
-
-
-class ClassResponse(ClassBase):
-    """Schema for fitness class response"""
-    id: int
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True
+from pydantic import BaseModel, EmailStr, Field, field_serializer, field_validator
 
 
 class BookingBase(BaseModel):
@@ -36,7 +12,7 @@ class BookingBase(BaseModel):
     client_name: str = Field(..., min_length=1, max_length=100)
     client_email: EmailStr
 
-    @validator('client_name')
+    @field_validator('client_name')
     def validate_client_name(cls, v):
         """Validate client name format"""
         if not v.strip():
@@ -53,21 +29,15 @@ class BookingResponse(BookingBase):
     """Schema for booking response"""
     id: int
     booking_time: datetime
+    scheduled_at: datetime
     status: str = "confirmed"
 
-    class Config:
-        from_attributes = True
-
-
-class BookingWithClassResponse(BookingResponse):
-    """Schema for booking response with class details"""
-    class_name: str
-    class_datetime: datetime
-    instructor: str
+    @field_serializer("booking_time", "scheduled_at", when_used="json")
+    def serialize_dt(self, dt: datetime, _info):
+        return dt.replace(microsecond=0).isoformat()
 
     class Config:
         from_attributes = True
-
 
 class ErrorResponse(BaseModel):
     """Schema for error responses"""

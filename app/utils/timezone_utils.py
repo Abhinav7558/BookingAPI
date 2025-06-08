@@ -13,9 +13,6 @@ def convert_timezone_to_utc(local_datetime: datetime, source_timezone: str = Non
     """
     if source_timezone is None:
         source_timezone = get_default_timezone()
-
-    if(local_datetime.tzinfo):
-        print(local_datetime.tzinfo)
     
     # If datetime is naive, localize it to source timezone
     if local_datetime.tzinfo is None:
