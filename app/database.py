@@ -5,11 +5,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Load environment variables
 load_dotenv()
 
-# Database URL from environment variable or default to SQLite
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./fitness_studio.db")
 
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL not set in environment variables.")

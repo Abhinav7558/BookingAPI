@@ -1,9 +1,25 @@
-"""
-Pydantic schemas for request/response validation
-"""
 from datetime import datetime
 from typing import Optional
+
 from pydantic import BaseModel, EmailStr, Field, field_serializer, field_validator
+
+
+class ORMConfig:
+    class Config:
+        from_attributes = True 
+
+
+class FitnessClassResponse(BaseModel, ORMConfig):
+    id: int
+    name: str
+    instructor: str
+    scheduled_at: datetime
+    total_slots: int
+    available_slots: int
+
+    @field_serializer("scheduled_at", when_used="json")
+    def serialize_dt(self, dt: datetime, _info):
+        return dt.astimezone().replace(tzinfo=None, microsecond=0).isoformat()
 
 
 class BookingBase(BaseModel):
@@ -25,7 +41,7 @@ class BookingCreate(BookingBase):
     pass
 
 
-class BookingResponse(BookingBase):
+class BookingResponse(BookingBase, ORMConfig):
     """Schema for booking response"""
     id: int
     booking_time: datetime
@@ -34,19 +50,13 @@ class BookingResponse(BookingBase):
 
     @field_serializer("booking_time", "scheduled_at", when_used="json")
     def serialize_dt(self, dt: datetime, _info):
-        return dt.replace(microsecond=0).isoformat()
-
-    class Config:
-        from_attributes = True
+        return dt.astimezone().replace(tzinfo=None, microsecond=0).isoformat()
 
 
-class BookingWithClassResponse(BookingResponse):
+class BookingWithClassResponse(BookingResponse, ORMConfig):
     """Schema for booking response with class details"""
     class_name: str
     instructor: str
-
-    class Config:
-        from_attributes = True
 
 
 class ErrorResponse(BaseModel):

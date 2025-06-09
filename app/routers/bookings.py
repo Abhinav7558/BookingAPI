@@ -114,7 +114,7 @@ async def create_booking_for_class(
 )
 async def get_bookings(
     email: str = Query(..., description="Client email address"),
-    timezone: Optional[str] = Query(
+    time_zone: Optional[str] = Query(
         None, 
         description="Target timezone for datetime conversion"
     ),
@@ -123,7 +123,7 @@ async def get_bookings(
     """
     Get all bookings for a specific email address
     """
-    target_timezone = timezone or get_default_timezone()
+    target_timezone = time_zone or get_default_timezone()
     if not is_valid_timezone(target_timezone):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -132,8 +132,6 @@ async def get_bookings(
     
     try:
         bookings = get_bookings_with_class_details_by_email(db, email)
-
-        print("boo", bookings)
         
         if not bookings:
             raise HTTPException(
@@ -141,7 +139,6 @@ async def get_bookings(
                 detail=f"No bookings found for email: {email}"
             )
         
-        # Convert datetimes to target timezone
         response_bookings = []
         for booking in bookings:
             response_bookings.append(BookingWithClassResponse(

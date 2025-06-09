@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime, timezone
 from typing import List, Optional
+
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 
@@ -66,8 +67,6 @@ def get_bookings_with_class_details_by_email(db: Session, email: str) -> List[di
         .order_by(Booking.booking_time.desc())
         .all()
     )
-
-    print("res", results)
     
     bookings_with_details = []
     for booking, fitness_class in results:
