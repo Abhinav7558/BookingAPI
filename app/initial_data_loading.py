@@ -3,9 +3,9 @@ import os
 from dotenv import load_dotenv
 import json
 
-from app.database import SessionLocal
-from app.models import FitnessClass
-from app.utils.timezone_utils import convert_timezone_to_utc
+from .database import SessionLocal
+from .models import FitnessClass
+from .utils.timezone_utils import convert_timezone_to_utc
 
 
 load_dotenv()

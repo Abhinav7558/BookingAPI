@@ -7,9 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.database import engine, Base
-from app.routers import bookings, classes
-from app.initial_data_loading import initial_data_load_fitness_classes
+from .database import engine, Base
+from .routers import bookings, classes
+from .initial_data_loading import initial_data_load_fitness_classes
 
 # Configure logging
 logging.basicConfig(

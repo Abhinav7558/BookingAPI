@@ -5,8 +5,8 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 
-from app.models import FitnessClass, Booking
-from app.schemas import BookingCreate
+from ..models import FitnessClass, Booking
+from ..schemas import BookingCreate
 
 logger = logging.getLogger(__name__)
 

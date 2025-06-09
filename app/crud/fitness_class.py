@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from app.models import FitnessClass
+from ..models import FitnessClass
 
 def get_upcoming_classes(db: Session, current_time: datetime):
     return (
