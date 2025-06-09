@@ -58,7 +58,7 @@ async def create_booking_for_class(
         if db_class.scheduled_at <= current_time:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail=f"Class is already over"
+                detail="Class is already over"
             )  
         
         # Check for existing booking
