@@ -19,7 +19,7 @@ class FitnessClassResponse(BaseModel, ORMConfig):
 
     @field_serializer("scheduled_at", when_used="json")
     def serialize_dt(self, dt: datetime, _info):
-        return dt.astimezone().replace(tzinfo=None, microsecond=0).isoformat()
+        return dt.replace(tzinfo=None, microsecond=0).isoformat()
 
 
 class BookingBase(BaseModel):
@@ -50,7 +50,7 @@ class BookingResponse(BookingBase, ORMConfig):
 
     @field_serializer("booking_time", "scheduled_at", when_used="json")
     def serialize_dt(self, dt: datetime, _info):
-        return dt.astimezone().replace(tzinfo=None, microsecond=0).isoformat()
+        return dt.replace(tzinfo=None, microsecond=0).isoformat()
 
 
 class BookingWithClassResponse(BookingResponse, ORMConfig):

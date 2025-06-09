@@ -92,7 +92,7 @@ async def create_booking_for_class(
             class_id=db_booking.class_id,
             client_name=db_booking.client_name,
             client_email=db_booking.client_email,
-            scheduled_at = db_class.scheduled_at,
+            scheduled_at=db_class.scheduled_at,
             booking_time=db_booking.booking_time,
             status=db_booking.status
         )
@@ -108,7 +108,7 @@ async def create_booking_for_class(
     
 
 @router.get(
-    "/bookings",
+    "",
     response_model=List[BookingWithClassResponse],
     status_code=status.HTTP_200_OK
 )

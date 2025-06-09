@@ -15,7 +15,10 @@ router = APIRouter(
     tags=['classes']
 )
 
-@router.get("/", response_model=List[FitnessClassResponse], status_code=status.HTTP_200_OK)
+@router.get("", 
+            response_model=List[FitnessClassResponse], 
+            status_code=status.HTTP_200_OK
+            )
 async def get_classes(db: Session = Depends(get_db),
                       time_zone: Optional[str] = Query(None, description="Target timezone for datetime conversion"
      ),
