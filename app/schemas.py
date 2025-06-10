@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field, field_serializer, field_validator
 
@@ -25,7 +24,7 @@ class FitnessClassResponse(BaseModel, ORMConfig):
 class BookingBase(BaseModel):
     """Base schema for booking"""
     class_id: int = Field(..., ge=1)
-    client_name: str = Field(..., min_length=1, max_length=100)
+    client_name: str = Field(..., min_length=4, max_length=50)
     client_email: EmailStr
 
     @field_validator('client_name')
@@ -57,15 +56,3 @@ class BookingWithClassResponse(BookingResponse, ORMConfig):
     """Schema for booking response with class details"""
     class_name: str
     instructor: str
-
-
-class ErrorResponse(BaseModel):
-    """Schema for error responses"""
-    detail: str
-    error_code: Optional[str] = None
-
-
-class SuccessResponse(BaseModel):
-    """Schema for success responses"""
-    message: str
-    data: Optional[dict] = None

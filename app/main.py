@@ -1,13 +1,11 @@
 import logging
-import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import SQLAlchemyError
 
-from .database import engine, Base
 from .routers import bookings, classes
 from .initial_data_loading import initial_data_load_fitness_classes
 
@@ -46,30 +44,37 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.exception_handler(SQLAlchemyError)
-async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
-    """Handle SQLAlchemy database errors"""
-    logger.error(f"Database error: {str(exc)}")
-    return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": "Database error occurred"}
-    )
-
-
-@app.exception_handler(Exception)
-async def general_exception_handler(request: Request, exc: Exception):
-    """Handle general exceptions"""
-    logger.error(f"Unexpected error: {str(exc)}")
-    return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": "Internal server error"}
-    )
-
-
 # Include API routes
 app.include_router(bookings.router)
 app.include_router(classes.router)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Handle Pydantic validation errors"""
+    logger.error(f"Validation error: {exc.errors()}")
+    
+    # Get the first error
+    error = exc.errors()[0]
+    
+    # Get field name (skip 'body' prefix)
+    field_parts = [str(loc) for loc in error["loc"] if str(loc) != "body"]
+    field = ".".join(field_parts) if field_parts else "field"
+    
+    # Clean up the message
+    message = error["msg"]
+    message = message.replace("value is not a valid", "Invalid")
+    message = message.replace("String should", f"{field.capitalize()} should")
+    message = message.replace("value", field)
+    
+    # Extract specific error after colon if exists
+    if ":" in message and "Invalid" in message:
+        message = message.split(":", 1)[-1].strip()
+    
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": message}
+    )
 
 
 @app.get("/")
