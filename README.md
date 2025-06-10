@@ -39,7 +39,6 @@ A simple and robust RESTful API for a fictional fitness studio, built with Pytho
 ## Project Structure
 
 ```
-.
 ├── alembic/     # Alembic migration scripts
 │ └── versions/
 ├── app/         # Main application source code
