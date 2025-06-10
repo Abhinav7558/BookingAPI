@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Yoga",
+    "scheduled_at": "2025-07-01T06:00:00+05:30",
+    "instructor": "Yoga Instructor 1",
+    "slots": 5
+  },
+  {
+    "name": "Zumba",
+    "scheduled_at": "2025-07-01T16:00:00+05:30",
+    "instructor": "Zumba Instructor 1",
+    "slots": 15
+  },
+  {
+    "name": "HIIT",
+    "scheduled_at": "2025-07-01T18:00:00+05:30",
+    "instructor": "HIIT Instructor 1",
+    "slots": 30
+  },
+  {
+    "name": "Yoga",
+    "scheduled_at": "2025-07-02T06:00:00+05:30",
+    "instructor": "Yoga Instructor 1",
+    "slots": 5
+  },
+  {
+    "name": "Zumba",
+    "scheduled_at": "2025-07-02T16:00:00+05:30",
+    "instructor": "Zumba Instructor 2",
+    "slots": 15
+  },
+  {
+    "name": "HIIT",
+    "scheduled_at": "2025-07-02T18:00:00+05:30",
+    "instructor": "HIIT Instructor 2",
+    "slots": 30
+  },
+  {
+    "name": "Yoga",
+    "scheduled_at": "2025-07-03T06:00:00+05:30",
+    "instructor": "Yoga Instructor 2",
+    "slots": 5
+  },
+  {
+    "name": "Zumba",
+    "scheduled_at": "2025-07-03T16:00:00+05:30",
+    "instructor": "Zumba Instructor 1",
+    "slots": 15
+  },
+  {
+    "name": "HIIT",
+    "scheduled_at": "2025-07-03T18:00:00+05:30",
+    "instructor": "HIIT Instructor 3",
+    "slots": 30
+  }
+]
