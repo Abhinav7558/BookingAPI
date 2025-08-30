@@ -269,3 +269,14 @@ GET /bookings/?client_email=user@example.com
 
 - **Timezone Management**:  
   All datetimes are handled in a timezone-aware manner, with a dedicated utility module ensuring consistency. Classes are assumed to be created in IST and stored as UTC.
+
+
+## Live Demo
+
+The application is deployed and accessible at:
+
+🔗 [https://bookingapi-9va2.onrender.com](https://bookingapi-9va2.onrender.com)
+
+You can explore the interactive API documentation directly at:
+
+📘 Swagger UI: [https://bookingapi-9va2.onrender.com/docs](https://bookingapi-9va2.onrender.com/docs)
